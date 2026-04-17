@@ -1,0 +1,156 @@
+/* ─────────────────────────────────────────────────────────────
+ * [요구사항 3] 모바일 반응형 레이아웃 동기화
+ *   기존 미디어 쿼리 구조를 Mobile-First 방식으로 재정비.
+ *   • 기본(모바일): 1fr 단일 컬럼 — 차트 상단, 피드 하단
+ *   • ≥ 768px 태블릿: 2 컬럼이 되지 않도록 1fr 유지
+ *   • ≥ 1024px 데스크탑: 1.4fr 1fr (기존 비율 유지)
+ *   alignItems는 제거해 각 섹션이 콘텐츠 높이에 맞게 유연하게 성장.
+ * ───────────────────────────────────────────────────────────── */
+
+.main {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  padding: 0 20px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-bottom: 60px;
+}
+
+/* ===== Source Indicator ===== */
+.sourceIndicator {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+  animation: fadeIn 0.5s ease-out 0.3s both;
+}
+
+.sourceTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  font-size: 0.73rem;
+  font-weight: 500;
+  border-radius: var(--radius-full);
+  letter-spacing: 0.01em;
+}
+
+.sourceReal {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--accent-green);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.sourceMock {
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--accent-orange);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+.statusDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent-green);
+  box-shadow: 0 0 8px var(--accent-green);
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+.dotMock {
+  background: var(--accent-orange);
+  box-shadow: 0 0 8px var(--accent-orange);
+}
+
+/* ===== Dashboard Grid ===== */
+/* Mobile-First: 기본은 단일 컬럼 (차트 → 피드 순서 자연 배치) */
+.dashboardGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+/* 768px ~ 1023px: 태블릿도 단일 컬럼 유지
+   콘텐츠가 좁아지는 문제 없이 세로로 쌓아 가독성 확보 */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .dashboardGrid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+/* 1024px 이상: 데스크탑 2컬럼 (차트 1.4fr : 피드 1fr) */
+@media (min-width: 1024px) {
+  .dashboardGrid {
+    grid-template-columns: 1.4fr 1fr;
+    /* align-items: stretch: 피드 섹션이 왼쪽(차트+이슈분석) 전체 높이에 맞춰 확장되도록 설정 */
+    align-items: stretch;
+  }
+}
+
+/* 각 섹션은 overflow 방지 및 높이 자연 확장 */
+.chartSection,
+.feedSection {
+  min-width: 0; /* grid overflow 방지 */
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ===== Footer ===== */
+.footer {
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border-glass);
+  text-align: center;
+  animation: fadeIn 0.5s ease-out 0.5s both;
+}
+
+.footer p {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+}
+
+.footerSub {
+  margin-top: 6px;
+  font-size: 0.7rem !important;
+  opacity: 0.6;
+}
+
+/* ===== 소형 모바일 미세 조정 ===== */
+@media (max-width: 480px) {
+  .main {
+    padding: 0 8px;
+  }
+
+  .container {
+    padding-bottom: 40px;
+  }
+
+  .dashboardGrid {
+    gap: 14px;
+  }
+
+  .sourceIndicator {
+    justify-content: center;
+    margin-bottom: 12px;
+  }
+
+  .sourceTag {
+    font-size: 0.68rem;
+    padding: 5px 12px;
+  }
+
+  .footer {
+    margin-top: 32px;
+    padding-top: 16px;
+  }
+
+  .footer p {
+    font-size: 0.72rem;
+  }
+}

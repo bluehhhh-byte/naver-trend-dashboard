@@ -1,0 +1,206 @@
+/* ─────────────────────────────────────────────────────────────
+ * [요구사항 5] Quilt Style(조각보) 텍스처 오버레이
+ *   기존 Glassmorphism 다크 패널 위에 미세한 조각보/패브릭 느낌의
+ *   기하학적 그리드 패턴을 SVG data URI로 합성.
+ *
+ *   SVG 패턴 구성:
+ *   ① 4×4 격자선 (quilting grid) — 대각선 십자 구조
+ *   ② 소형 마름모 포인트 — 전통 조각보 결합 지점 표현
+ *   opacity 0.035 로 설정해 콘텐츠 가독성을 해치지 않으면서
+ *   아날로그적 깊이감을 추가.
+ * ───────────────────────────────────────────────────────────── */
+
+.container {
+  padding: 24px;
+  animation: fadeInUp 0.7s ease-out 0.15s both;
+  margin-bottom: 20px;
+  position: relative; /* 퀼트 패턴 ::before 기준 컨텍스트 */
+  overflow: hidden;   /* 패턴이 카드 밖으로 넘치지 않도록 */
+  max-height: 820px;
+  display: flex;
+  flex-direction: column;
+}
+
+.scrollArea {
+  overflow-y: auto;
+  flex: 1;
+  padding-right: 8px;
+  margin-right: -4px;
+}
+
+/* 스크롤바 커스터마이징 */
+.scrollArea::-webkit-scrollbar {
+  width: 5px;
+}
+.scrollArea::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+}
+.scrollArea::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+.scrollArea::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ── Quilt 텍스처 레이어 ──────────────────────────────────── */
+.container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none; /* 클릭 이벤트 투과 */
+  z-index: 0;           /* 콘텐츠 아래에 위치 */
+  border-radius: inherit;
+
+  /* 
+   * SVG 퀼트 패턴:
+   * - 16×16 타일 반복
+   * - 대각선(/) 방향 격자: 조각보 특유의 다이아몬드 분할 구현
+   * - path stroke opacity 조절로 아주 미세하게 표현
+   */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='0.6' stroke-opacity='0.5'%3E%3C!-- 수평선 --%3E%3Cline x1='0' y1='16' x2='32' y2='16'/%3E%3C!-- 수직선 --%3E%3Cline x1='16' y1='0' x2='16' y2='32'/%3E%3C!-- 대각선 NW→SE --%3E%3Cline x1='0' y1='0' x2='32' y2='32'/%3E%3C!-- 대각선 NE→SW --%3E%3Cline x1='32' y1='0' x2='0' y2='32'/%3E%3C!-- 중앙 마름모 포인트 --%3E%3Cpath d='M16 13 L19 16 L16 19 L13 16 Z' stroke-width='0.8'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 32px 32px;
+
+  /* 콘텐츠 가독성 보존: 아주 낮은 불투명도 (0.035) */
+  opacity: 0.035;
+}
+
+/* 콘텐츠는 퀼트 레이어 위에 표시되도록 상대 배치 */
+.container > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── 이하 기존 스타일 유지 ───────────────────────────────── */
+
+.header {
+  margin-bottom: 16px;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.titleIcon { font-size: 1.1rem; }
+
+.titleSub {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.keywordCloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-glass);
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.wordBadge {
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  color: var(--accent-blue);
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all var(--transition-fast);
+}
+
+.wordBadge:hover {
+  background: rgba(59, 130, 246, 0.2);
+  transform: translateY(-2px);
+}
+
+.count {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2px 6px;
+  border-radius: var(--radius-full);
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.latestNews {
+  border-top: 1px solid var(--border-glass);
+  padding-top: 16px;
+}
+
+.subTitle {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+
+.newsList {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.newsList li {
+  font-size: 0.9rem;
+}
+
+.newsList a {
+  color: var(--text-primary);
+  text-decoration: none;
+  display: block;
+  padding: 8px 12px;
+  background: rgba(255,255,255,0.03);
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.newsList a:hover {
+  background: rgba(255,255,255,0.06);
+}
+
+.newsItemBox {
+  display: block;
+}
+
+.newsItemTitle {
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.newsList a:hover .newsItemTitle {
+  color: var(--accent-blue);
+}
+
+.newsItemMeta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.newsDomain {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1px 6px;
+  border-radius: 4px;
+  color: var(--text-secondary);
+}
+
+.newsDate {
+  opacity: 0.8;
+}
