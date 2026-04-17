@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { generateMockNews } from "@/lib/mockData";
 
+export const dynamic = "force-dynamic";
+
 // ─────────────────────────────────────────────────────────────
 // [요구사항 2] API 호출 최적화 — 인메모리 캐싱 (5분 TTL)
 //   동일 keyword + date 조합 요청이 5분 내 반복될 경우
