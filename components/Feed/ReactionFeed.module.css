@@ -136,7 +136,7 @@
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--border-glass);
   border-radius: var(--radius-md);
-  padding: 10px 14px; /* 컴팩트하게 조정: 11개 표출 목적 */
+  padding: 10px 14px;
   text-decoration: none;
   color: inherit;
   transition: all var(--transition-base);

@@ -136,13 +136,13 @@ export default function ReactionFeed({
       key: "news",
       label: "뉴스 반응",
       icon: "📰",
-      count: newsData?.length || 0,
+      count: newsData?.length > 30 ? 30 : (newsData?.length || 0),
     },
     {
       key: "blog",
       label: "SNS / 블로그",
       icon: "💬",
-      count: blogData?.length || 0,
+      count: blogData?.length > 30 ? 30 : (blogData?.length || 0),
     },
   ];
 
@@ -220,9 +220,10 @@ export default function ReactionFeed({
             <div className={styles.cardGrid}>
 
               {newsData?.length > 0 ? (
-                // Show newest first
+                // Show newest first, max 30 items
                 [...newsData]
                   .sort((a, b) => new Date(b.pubDate || b.date) - new Date(a.pubDate || a.date))
+                  .slice(0, 30)
                   .map((item, i) => (
                     <NewsCard key={i} item={item} index={i} />
                   ))
@@ -235,9 +236,10 @@ export default function ReactionFeed({
           {!isLoading && selectedDate && activeTab === "blog" && (
             <div className={styles.cardGrid}>
               {blogData?.length > 0 ? (
-                // Show newest first
+                // Show newest first, max 30 items
                 [...blogData]
                   .sort((a, b) => new Date(b.postdate || b.date) - new Date(a.postdate || a.date))
+                  .slice(0, 30)
                   .map((item, i) => (
                     <BlogCard key={i} item={item} index={i} />
                   ))
